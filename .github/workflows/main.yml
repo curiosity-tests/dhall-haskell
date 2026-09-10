@@ -1,9 +1,27 @@
 env:
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
   cache_generation: 2024-06-13
 
 # NOTE: Please keep .mergify.yml in sync when adding or removing any jobs.
 name: main
-on: [pull_request]
+run-name: "main ${{ inputs.leg || github.event_name }} ${{ inputs.racecar_run }}"
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      leg:
+        description: "baseline (uninstrumented) or instrumented (under chalk/curiosity)"
+        type: choice
+        options: [instrumented, baseline]
+        default: baseline
+      profile:
+        description: "CrashOverride chalk profile"
+        type: string
+        default: curiosity-tests-racecar
+      racecar_run:
+        description: "racecar correlation token, echoed into the run name"
+        type: string
+        default: ""
 jobs:
   build:
     strategy:
