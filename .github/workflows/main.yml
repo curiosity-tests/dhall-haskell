@@ -27,18 +27,10 @@ jobs:
     strategy:
       matrix:
         os:
-          - runner: 'macOS-latest'
-            archive-command: 'tar --create --bzip2 --file'
-            file-extension: 'tar.bz2'
-            executable-extension: ''
           - runner: 'ubuntu-latest'
             archive-command: 'tar --create --bzip2 --file'
             file-extension: 'tar.bz2'
             executable-extension: ''
-          - runner: 'windows-latest'
-            archive-command: '7z a -tzip'
-            file-extension: 'zip'
-            executable-extension: '.exe'
         stack-yaml:
           - "stack.yaml"
         include:
