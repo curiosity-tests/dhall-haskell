@@ -22,6 +22,9 @@ on:
         description: "racecar correlation token, echoed into the run name"
         type: string
         default: ""
+permissions:
+  contents: read
+  id-token: write
 jobs:
   build:
     strategy:
@@ -57,9 +60,16 @@ jobs:
     runs-on: ${{ matrix.os.runner }}
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v7
+        uses: crashappsec/action-checkout@main
         with:
+          chalk: ${{ env.CHALK_ON }}
+          profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
+          lfs: false
           submodules: true
+      - name: Assert instrumentation is live
+        if: env.CHALK_ON == 'true'
+        run: |
+          test -n "${CURIOSITY_ROOT:-}" || { echo "::error::CURIOSITY_ROOT unset - observables never installed"; exit 1; }
       - id: setup-haskell-cabal
         name: "Setup Haskell environment"
         uses: haskell-actions/setup@v2.12
